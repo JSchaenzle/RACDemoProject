@@ -8,6 +8,10 @@
 
 #import "ViewController.h"
 #import "MainView.h"
+#import "ReactiveCocoa.h"
+#import "RACSignal.h"
+#import "RACChannel.h"
+#import "RACKVOChannel.h"
 
 @interface ViewController ()
 
@@ -18,6 +22,13 @@
 - (void)loadView {
     MainView *view = [MainView new];
     self.view = view;
+
+    RACChannelTerminal *textField1Channel = [view.textField1 rac_newTextChannel];
+
+    RACChannelTerminal *textField2Channel = [view.textField2 rac_newTextChannel];
+
+    [textField1Channel subscribe:textField2Channel];
+    [textField2Channel subscribe:textField1Channel];
 }
 
 - (void)viewDidLoad {

@@ -7,4 +7,6 @@
 #import <UIKit/UIKit.h>
 
 @interface MainView : UIView
+@property (nonatomic, strong) UITextField *textField1;
+@property (nonatomic, strong) UITextField *textField2;
 @end
