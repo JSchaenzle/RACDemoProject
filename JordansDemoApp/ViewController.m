@@ -7,12 +7,18 @@
 //
 
 #import "ViewController.h"
+#import "MainView.h"
 
 @interface ViewController ()
 
 @end
 
 @implementation ViewController
+
+- (void)loadView {
+    MainView *view = [MainView new];
+    self.view = view;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
