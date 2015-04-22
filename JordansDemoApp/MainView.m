@@ -8,6 +8,7 @@
 
 @interface MainView ()
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *temperatureLabel;
 @end
 
 @implementation MainView
@@ -18,20 +19,31 @@
 
          _titleLabel = [UILabel new];
          _titleLabel.text = @"Jordan's Demo App";
+         _titleLabel.textAlignment = NSTextAlignmentCenter;
 
-         _textField1 = [UITextField new];
-         _textField1.layer.borderColor = [UIColor blackColor].CGColor;
-         _textField1.layer.borderWidth = 1;
+         _temperatureLabel = [UILabel new];
+         _temperatureLabel.text = @"Temperature Setting:";
+         _temperatureLabel.textAlignment = NSTextAlignmentCenter;
 
-         _textField2 = [UITextField new];
-         _textField2.layer.borderColor = [UIColor blackColor].CGColor;
-         _textField2.layer.borderWidth = 1;
+         _slider = [UISlider new];
+         _slider.minimumValue = 0;
+         _slider.maximumValue = 100;
+         _slider.continuous = YES;
 
+         _heatSwitch = [UISwitch new];
+         _heatLabel = [UILabel new];
+
+         _acSwitch = [UISwitch new];
+         _acLabel = [UILabel new];
      }
 
      [self addSubview:_titleLabel];
-     [self addSubview:_textField1];
-     [self addSubview:_textField2];
+     [self addSubview:_temperatureLabel];
+     [self addSubview:_slider];
+     [self addSubview:_heatSwitch];
+     [self addSubview:_acSwitch];
+     [self addSubview:_heatLabel];
+     [self addSubview:_acLabel];
 
      [self setNeedsUpdateConstraints];
      return self;
@@ -45,18 +57,41 @@
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.mas_centerX);
         make.top.equalTo(self.mas_top).offset(50);
+        make.width.equalTo(self.mas_width).multipliedBy(0.9);
+        make.height.equalTo(@30);
     }];
 
-    [self.textField1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.titleLabel.mas_centerX);
-        make.top.equalTo(self.titleLabel.mas_bottom).offset(20);
+    [self.temperatureLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.mas_centerX);
+        make.top.equalTo(self.mas_top).offset(150);
         make.width.equalTo(self.mas_width).multipliedBy(0.9);
+        make.height.equalTo(@30);
     }];
 
-    [self.textField2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.titleLabel.mas_centerX);
-        make.top.equalTo(self.textField1.mas_bottom).offset(20);
-        make.width.equalTo(self.mas_width).multipliedBy(0.9);
+    [self.slider mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.temperatureLabel.mas_bottom).offset(5);
+        make.centerX.equalTo(self.mas_centerX);
+        make.width.equalTo(self.mas_width).multipliedBy(0.8);
+    }];
+
+    [self.heatSwitch mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.slider.mas_bottom).offset(20);
+        make.centerX.equalTo(self.mas_centerX);
+    }];
+
+    [self.heatLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.heatSwitch.mas_centerY);
+        make.left.equalTo(self.heatSwitch.mas_right).offset(10);
+    }];
+
+    [self.acSwitch mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.heatSwitch.mas_bottom).offset(20);
+        make.centerX.equalTo(self.mas_centerX);
+    }];
+
+    [self.acLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.acSwitch.mas_centerY);
+        make.left.equalTo(self.acSwitch.mas_right).offset(10);
     }];
 
 }

@@ -9,26 +9,51 @@
 #import "ViewController.h"
 #import "MainView.h"
 #import "ReactiveCocoa.h"
-#import "RACSignal.h"
-#import "RACChannel.h"
-#import "RACKVOChannel.h"
-
-@interface ViewController ()
-
-@end
 
 @implementation ViewController
 
 - (void)loadView {
+    const NSNumber *minHeatTemp = @75.0;
+    const NSNumber *maxACTemp = @25.0;
+
     MainView *view = [MainView new];
     self.view = view;
 
-    RACChannelTerminal *textField1Channel = [view.textField1 rac_newTextChannel];
+    RACChannelTerminal *sliderTerminal = [view.slider rac_newValueChannelWithNilValue:@0];
+    RACChannelTerminal *heatSwitchTerminal = view.heatSwitch.rac_newOnChannel;
+    RACChannelTerminal *acSwitchTerminal = view.acSwitch.rac_newOnChannel;
 
-    RACChannelTerminal *textField2Channel = [view.textField2 rac_newTextChannel];
+    RACSignal *forceHeatSignal = [heatSwitchTerminal map:^id(id value) {
+        NSLog(@"heatSwitch sent %@", value);
+        return [value boolValue] ? minHeatTemp : @([minHeatTemp floatValue] - 1);
+    }];
 
-    [textField1Channel subscribe:textField2Channel];
-    [textField2Channel subscribe:textField1Channel];
+    RACSignal *forceACSignal = [acSwitchTerminal map:^id(id value) {
+        NSLog(@"acSwitch sent %@", value);
+        return [value boolValue] ? maxACTemp : @([maxACTemp floatValue] + 1);
+    }];
+
+    [[RACSignal merge:@[forceHeatSignal, forceACSignal]] subscribe:sliderTerminal];
+
+    RACSignal *heatOnSignal = [[sliderTerminal map:^id(id value) {
+        return @([value floatValue] > [minHeatTemp floatValue]);
+    }] merge:[[acSwitchTerminal not] ignore:@YES]];
+
+    [heatOnSignal subscribe:heatSwitchTerminal];
+
+    RACSignal *acOnSignal = [[sliderTerminal map:^id(id value) {
+        return @([value floatValue] < [maxACTemp floatValue]);
+    }] merge:[[heatSwitchTerminal not] ignore:@YES]];
+
+    [acOnSignal subscribe:acSwitchTerminal];
+
+    RAC(view.heatLabel, text) = [[heatOnSignal merge:heatSwitchTerminal] map:^id(id value) {
+        return [value boolValue] ? @"Heat On" : @"Heat Off";
+    }];
+
+    RAC(view.acLabel, text) = [[acOnSignal merge:acSwitchTerminal] map:^id(id value) {
+        return [value boolValue] ? @"A/C On" : @"A/C Off";
+    }];
 }
 
 - (void)viewDidLoad {
@@ -42,3 +67,4 @@
 }
 
 @end
+

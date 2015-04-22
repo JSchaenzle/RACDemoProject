@@ -6,7 +6,18 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@class SimplePickerView;
+
 @interface MainView : UIView
-@property (nonatomic, strong) UITextField *textField1;
-@property (nonatomic, strong) UITextField *textField2;
+//@property (nonatomic, strong) UITextField *textField;
+//@property (nonatomic, strong) SimplePickerView *picker;
+//@property (nonatomic, strong) UIButton *clearButton;
+
+@property (nonatomic, strong) UISlider *slider;
+@property (nonatomic, strong) UISwitch *heatSwitch;
+@property (nonatomic, strong) UISwitch *acSwitch;
+@property (nonatomic, strong) UILabel *heatLabel;
+@property (nonatomic, strong) UILabel *acLabel;
+
+
 @end
